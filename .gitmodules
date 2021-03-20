@@ -1,3 +1,3 @@
-[submodule "src/themes/cactus"]
-	path = src/themes/cactus
+[submodule "themes/cactus"]
+	path = themes/cactus
 	url = https://github.com/monkeyWzr/hugo-theme-cactus
