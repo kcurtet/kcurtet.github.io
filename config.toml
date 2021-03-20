@@ -1,4 +1,4 @@
-baseURL = "http://kcurtet.github.io/"
+baseURL = "https://kcurtet.github.io/"
 languageCode = "en-us"
 title = "Kevin Curtet Blog's"
 theme = "cactus"
