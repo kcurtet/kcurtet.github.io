@@ -1,0 +1,49 @@
+#+TITLE: Kevin Curtet Site
+
+** Requirements
+
+*** Hugo
+
+The static site generator. More info in [[https://gohugo.io][Hugo's Site]]
+
+*** Emacs
+
+My favorite editor. with evil modifications.
+
+With a powerful tool to create documents =org-mode=.
+
+I recommend [[github:hlissner/doom-emacs][hlissner/doom-emacs]] for getting started with a "boosted" emacs configuration.
+
+*** ox-hugo
+
+=ox-hugo= is an Org exporter backend that exports Org to [[https://gohugo.io/][Hugo]]-compatible Markdown ([[https://github.com/russross/blackfriday][Blackfriday]]) and also generates the front-matter (in TOML or YAML format).
+
+In =doom-emacs= add =+hugo= flag to the =org module= in your =.doom.d/init.el= file to install this lib.
+
+#+begin_src emacs-lisp
+(org
+ +hugo)
+#+end_src
+
+Then run =.emacs.d/bin/doom sync= to sync your new config.
+
+
+** Installation
+
+To build this site you need to clone this [[github:kcurtet/kcurtet.github.io][repo]] and run =hugo --minify=.
+
+#+begin_src shell
+git clone https://github.com/kcurtet/kcurtet.github.io --depth 1 kcurtet-site
+cd kcurtet.github.io && hugo --minify
+#+end_src
+
+The content are generated with =org-mode= files.
+
+To export an org file to Hugo with =ox-hugo= installed type =C-c C-e H H= in the subtree of the post you want to build.
+
+** Github Action CI/CD
+
+This repo contains a file =.github/workflows/gh-pages.yaml= to build this site with github actions and publish the site in [[https://kcurtet.github.io]]
+
+** Comming Soon
+*** TODO Build a =emacs-lisp= batch script to build the markdown files.
