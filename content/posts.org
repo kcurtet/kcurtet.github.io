@@ -4,37 +4,24 @@
 #+HUGO_AUTO_SET_LASTMOD: t
 #+OPTIONS: author:nil
 
-* TODO How to write a blog with org-mode and hugo. :org_mode:hugo:
+* How to write a blog with org-mode and hugo. :org_mode:hugo:emacs:
 :PROPERTIES:
 :EXPORT_FILE_NAME: how-to-write-a-blog-with-org-mode-and-hugo
 :EXPORT_DATE: 2021-03-20
-:EXPORT_HUGO_MENU: :menu "main"
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER: :categories '("emacs")
 :END:
 
-Build a blog with Emacs, Hugo and org-mode its more easy than your think. You need to learn some basic
-concepts about hugo and org-mode itself.
+Build a blog with Emacs, Hugo and org-mode its more easy than your think.
+
 ** Requirements.
-We need some tools to archive this. In this post we learn how to install some of them.
 
 - Emacs
-  There are tutorials on internet on how to install Emacs for all the operative systems.
-  On linux it's easy to install with your default package manager or guix package manager.
 - Hugo
-  In the homepage you can find documentation about how to install hugo. https://gohugo.io
-- org-mode
-  Installed by default with Emacs.
 - ox-hugo
-  Installed with the Emacs package manager
 
 ** Install ox-hugo
 
-Org-mode has a library called `ox` to export org-files to other file types like pdf, markdown, latex and more.
-
-One thing you can do its install aditional export extensions to this library.
-just by installing in this case `ox-hugo`.
-
-First we need to install `ox-hugo`
+First we need to install =ox-hugo=
 
 #+begin_src emacs-lisp
 ;; Maybe you need to add melpa repository in your `init.el' file
@@ -44,23 +31,23 @@ First we need to install `ox-hugo`
 (eval-after-load 'ox
   (require 'ox-hugo))
 
-;; or if your use `use-package' to install and load the paackage.
+;; or if your use `use-package' to install and load the package.
 ;; More info: https://github.com/jwiegley/use-package
 (use-package ox-hugo
   :after 'ox)
 #+end_src
 
-** Create new Hugo blog
+** Create new Hugo site
 
-First we need to create the basic hugo directory structure.
+First we need to create the basic Hugo directory structure.
 
-Go in your projects folder run this hugo cli command:
+Go in your projects folder run this command:
 
 #+begin_src shell
 hugo new site kcurtet.github.io # remplace with your site folder
 #+end_src
 
-Then you can see a directory structure like this:
+Then we can see the directory structure like this:
 
 #+begin_example
 kcurtet.github.io
@@ -75,43 +62,49 @@ kcurtet.github.io
 └── themes
 #+end_example
 
-In the =config.toml= you can see the site configurations.
+In the =config.toml= we can see the Hugo's configuration.
 
-Now we need to initialize a git repo and then add a default theme for our blog as git submodule. I choose the cactus hugo theme. Don't panic it's easy as run 3 commands:
+Now we need to add a default theme four our blog.
+
+We can create a new git repository to add source-control to our files but also to publish our site.
+
+Then we need to add a theme to our site. In my case i choose the [[github:monkeyWzr/hugo-theme-cactus][Cactus Theme]]
 
 #+begin_src shell
 cd kcurtet.github.io
 git init
 git submodule add https://github.com/monkeyWzr/hugo-theme-cactus themes/cactus
+# if you don't have a git repo download the theme instead
+git clone https://github.com/monkeyWzr/hugo-theme-cactus themes/cactus
 #+end_src
 
-Now edit your config.toml file with:
+Now we add in the config.toml the theme we have downloaded.
 
 #+begin_example
 theme = "cactus"
 #+end_example
 
-And voila! your theme is configured.
+And voila! your site are done.
 
-** Add Blog Content
+** Add content to your site.
 
-Now the important part. add blog posts with org-mode.
+We can add content in markdown directly but I love Emacs and I want to edit my blog with org-mode files.
 
-We need to create a file for our posts. it can be placed anywhere you want but for simplicity in this example i create a new file in the =content= folder called =posts.org=.
+To archive this we need to create a file for our posts. it can be placed anywhere you want but for simplicity i create a new file in the =content/= folder called =posts.org=.
 
 #+begin_src shell
 touch content/posts.org # just creates a blank file posts.org
-emacs content/posts.org
 #+end_src
 
-Now with emacs add some headers it the top of the file for ox-hugo.
+Now with Emacs we add some headers to the file for Hugo.
 
 #+begin_src org
-,#+HUGO_BASE_DIR: ./..    ;; The Hugo site directory.
-,#+HUGO_SECTION: posts ;; The section where to save the posts. aka /content/posts
+,#+HUGO_BASE_DIR: ../
+,#+HUGO_SECTION: posts
 #+end_src
 
-In this case the =HUGO_BASE_DIR= is the parent folder of the file. This tells =ox-hugo= where to store the exports of your file.
+In this case the =HUGO_BASE_DIR= is the parent folder of the file.
+=HUGO_SECTION= creates a folder =content/posts= where we save the markdown files.
 
 Then you need to create your first blog post.
 
@@ -133,13 +126,14 @@ Text to introduce my post.
 
 In this example your can create as many headers as posts you want then change the properties to export the content to hugo with the correct file path and date.
 
-=EXPORT_FILE_NAME= tells ox-hugo how to name the file in the content/posts folder in this example.
-=EXPORT_DATE= tells ox-hugo the date of the publication.
-=EXPORT_HUGO_MENU: :menu "main"= tells ox-hugo to add this entry to the main menu.
+=EXPORT_FILE_NAME= the file name of the post in =content/posts= also used as slug.
+=EXPORT_DATE= The date of the publication.
+=EXPORT_HUGO_MENU: :menu "main"= Add this entry to the main menu.
 
-The =TODO= keyword in the front of the title is handled by =ox-hugo= by adding to your post the markdown front-matters =draft:true= and Hugo doesn't publish this files because it thinks they are not finished.
+The =TODO= keyword sets your posts as draft. Hugo doesn't publish drafts.
+But we can see an example of the draft with =hugo server -D=
 
-And type =C-c C-e H H= to create the markdown files in the content dir.
+And type =C-c C-e H H= to create the markdown files in =content/posts=.
 
 #+begin_example
 .
@@ -172,4 +166,50 @@ hugo --minify
 
 Now in we have a new =/public= folder with our static site.
 
-** TODO Build with github pages.
+** TODO Build with GitHub pages.
+
+First we need to add a file =.github/workflows/gh-pages.yaml= in our git repository.
+
+Then add this content:
+
+#+begin_src yaml
+name: github pages
+
+on:
+  push:
+    branches:
+      - main  # Set a branch to deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.81.0'
+          # extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+
+#+end_src
+
+Then we need to create a repository in GitHub. Then follow the instructions to [[https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-first-deployment-with-github_token][add secrets for deploy actions]].
+
+When we setup all correctly. we can push our repo to GitHub.
+
+And the action should have created a gh-pages branch with the static site. Maybe you need to edit the settings of the repo to see your site.
+
+Don't forget to set your baseUrl in =config.toml= or Hugo can't link the assets correctly.
