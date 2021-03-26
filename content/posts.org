@@ -58,7 +58,7 @@ git add .
 git commit -m "Initial commit"
 #+end_src
 
-Now we need to add a default theme four our blog.
+Now we need to add a default theme for the site.
 
 In my case I choose the [[https://github.com/monkeyWzr/hugo-theme-cactus][Cactus Theme]]
 
