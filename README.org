@@ -41,6 +41,14 @@ The content are generated with =org-mode= files.
 
 To export an org file to Hugo with =ox-hugo= installed type =C-c C-e H H= in the subtree of the post you want to build.
 
+** Usage
+
+You can build your org-mode files to markdown with the `publish.el` package i made.
+
+```shell
+./publish.el FILE [SUBTREE]
+```
+
 ** Github Action CI/CD
 
 This repo contains a file =.github/workflows/gh-pages.yaml= to build this site with github actions and publish the site in [[https://kcurtet.github.io]]

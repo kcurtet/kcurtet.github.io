@@ -1,40 +1,37 @@
-#+TITLE: Posts
-#+HUGO_BASE_DIR: ../
-#+HUGO_SECTION: posts
-#+HUGO_AUTO_SET_LASTMOD: t
-#+OPTIONS: author:nil
-* Blog
-** Build a static site with Hugo and Orgmode.
-:PROPERTIES:
-:EXPORT_FILE_NAME: build-a-static-site-with-hugo-and-orgmode
-:EXPORT_DATE: 2021-03-20
-:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :categories '("emacs")
-:END:
++++
+title = "Build a static site with Hugo and Orgmode."
+date = 2021-03-20
+lastmod = 2021-03-26T03:14:36+01:00
+draft = false
+categories = ["emacs"]
++++
 
 Static site generators are getting popular this years. I was thinking a time ago about creating one with gatsby or jekyll.
 But I discover the power of org-mode and how to organize my life with simple text files. And the next step is to write a
 blog with my editor only.
 
-*** Requirements.
 
-- Emacs
-- Hugo
-- ox-hugo
-- git
+## Requirements. {#requirements-dot}
 
-*** Create new Hugo site
+-   Emacs
+-   Hugo
+-   ox-hugo
+-   git
+
+
+## Create new Hugo site {#create-new-hugo-site}
 
 First we need to create the basic Hugo directory structure.
 
 Create a new project site with this command:
 
-#+begin_src shell
+```shell
 hugo new site kcurtet.github.io # remplace with your site folder
-#+end_src
+```
 
 Then we can see the directory structure like this:
 
-#+begin_example
+```text
 kcurtet.github.io
 ├── archetypes
 ├── config.toml
@@ -45,94 +42,99 @@ kcurtet.github.io
 ├── resources
 ├── static
 └── themes
-#+end_example
+```
 
-The basic configuration for the site its done in =config.toml=
+The basic configuration for the site its done in `config.toml`
 
 Initialize a new git repository.
 
-#+begin_src shell
+```shell
 cd kcurtet.github.io
 git init
 git add .
 git commit -m "Initial commit"
-#+end_src
+```
 
 Now we need to add a default theme four our blog.
 
-In my case I choose the [[https://github.com/monkeyWzr/hugo-theme-cactus][Cactus Theme]]
+In my case I choose the [Cactus Theme](https://github.com/monkeyWzr/hugo-theme-cactus)
 
-#+begin_src shell
+```shell
 git submodule add https://github.com/monkeyWzr/hugo-theme-cactus themes/cactus
-#+end_src
+```
 
-Now add in the file =config.toml= the theme we have downloaded.
+Now add in the file `config.toml` the theme we have downloaded.
 
-#+begin_example
+```text
 theme = "cactus"
-#+end_example
+```
 
-This configures Hugo to utilize =cactus= as base theme.
+This configures Hugo to utilize `cactus` as base theme.
 
-*** Install ox-hugo to create the posts.
 
-We need =ox-hugo= to export =org-mode= files to Hugo's =Backfriday Markdown=
+## Install ox-hugo to create the posts. {#install-ox-hugo-to-create-the-posts-dot}
 
-**** Vanilla Emacs
+We need `ox-hugo` to export `org-mode` files to Hugo's `Backfriday Markdown`
+
+
+### Vanilla Emacs {#vanilla-emacs}
 
 This configuration its for pure emacs.
 
-#+begin_src emacs-lisp
+```emacs-lisp
 ;; Maybe you need to add melpa repository in your `init.el' file
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; M-x install-package RET ox-hugo
 ;; Then load it after `ox'
 (eval-after-load 'ox
   (require 'ox-hugo))
-#+end_src
+```
 
-**** Doom
 
-In doom.d/init.el remove the comment for =org= module and add the =+hugo= flag
+### Doom {#doom}
 
-#+begin_src emacs-lisp
+In doom.d/init.el remove the comment for `org` module and add the `+hugo` flag
+
+```emacs-lisp
 (org
  +hugo)
-#+end_src
+```
 
-**** use-package
 
-More info: https://github.com/jwiegley/use-package
+### use-package {#use-package}
 
-#+begin_src emacs-lisp
+More info: <https://github.com/jwiegley/use-package>
+
+```emacs-lisp
 (use-package ox-hugo
   :after 'ox)
-#+end_src
+```
 
-*** Write the content
+
+## Write the content {#write-the-content}
 
 Now its time to write some blog posts. First we create a org file in the content folder of our project.
 
-#+begin_src shell
+```shell
 touch content/posts.org
-#+end_src
+```
 
 In the beginning of the file we add this headers to loacate our project.
 
-#+begin_src org
-,#+HUGO_BASE_DIR: ../  # Hugo base project folder
-,#+HUGO_SECTION: posts # Hugo folder in content
-#+end_src
+```org
+#+HUGO_BASE_DIR: ../  # Hugo base project folder
+#+HUGO_SECTION: posts # Hugo folder in content
+```
 
-=HUGO_BASE_DIR=: The project root. In this case is the parent folder of the file.
-=HUGO_SECTION= creates a folder =content/posts= where we save the markdown files.
+`HUGO_BASE_DIR`: The project root. In this case is the parent folder of the file.
+`HUGO_SECTION` creates a folder `content/posts` where we save the markdown files.
 
 Then you need to create your first blog post.
 
 Start with a Heading or Subheading to add some properties to it.
 
-#+begin_src org
-,* TODO Hello this is my first blog post
+```org
+* TODO Hello this is my first blog post
 :PROPERTIES:
 :EXPORT_FILE_NAME: my-first-post-with-hugo-and-org-mode
 :EXPORT_DATE: 2021-03-20
@@ -141,21 +143,21 @@ Start with a Heading or Subheading to add some properties to it.
 
 Text to introduce my post.
 
-,** Sub titles of the post
+** Sub titles of the post
    More text...
-#+end_src
+```
 
 In this example we can create as many headers as posts we want, then change the properties to export the content to hugo with the correct file path and date.
 
-=EXPORT_FILE_NAME= the file name of the post in =content/posts= also used as slug.
-=EXPORT_DATE= The date of the publication.
-=EXPORT_HUGO_MENU: :menu "main"= Add this entry to the main menu.
+`EXPORT_FILE_NAME` the file name of the post in `content/posts` also used as slug.
+`EXPORT_DATE` The date of the publication.
+`EXPORT_HUGO_MENU: :menu "main"` Add this entry to the main menu.
 
-The =TODO= keyword sets the posts as drafts.
+The `TODO` keyword sets the posts as drafts.
 
-When you are ready to publish your post type =C-c C-e H H= to create the markdown files in =content/posts=.
+When you are ready to publish your post type `C-c C-e H H` to create the markdown files in `content/posts`.
 
-#+begin_example
+```text
 .
 ├── archetypes
 ├── config.toml
@@ -168,38 +170,40 @@ When you are ready to publish your post type =C-c C-e H H= to create the markdow
 ├── resources
 ├── static
 └── themes
-#+end_example
+```
 
-*** Build the static site.
+
+## Build the static site. {#build-the-static-site-dot}
 
 We can preview the contents in a local server with:
 
-#+begin_src shell
+```shell
 hugo server -D # -D to see the drafts.
-#+end_src
+```
 
 Or we can build the blog with this command:
 
-#+begin_src shell
+```shell
 hugo --minify
-#+end_src
+```
 
-Now in we have a new =/public= folder with our static site.
+Now in we have a new `/public` folder with our static site.
 
-*** CI/CD Build and upload with GitHub pages.
+
+## CI/CD Build and upload with GitHub pages. {#ci-cd-build-and-upload-with-github-pages-dot}
 
 We want to build our blog every time we upload the project to github.
 
-First we create a file =.github/workflows/gh-pages.yaml= in the git repository.
+First we create a file `.github/workflows/gh-pages.yaml` in the git repository.
 
-#+begin_src shell
+```shell
 mkdir -p .github/workflows
 touch .github/workflows/gh-pages.yaml
-#+end_src
+```
 
 And we add this content:
 
-#+begin_src yaml
+```yaml
 name: github pages
 
 on:
@@ -230,11 +234,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
+```
 
-#+end_src
-
-We need a token to push our build to gh-pages branch. Follow this instructions to [[https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-first-deployment-with-github_token][add secrets for deploy actions]].
-
+We need a token to push our build to gh-pages branch. Follow this instructions to [add secrets for deploy actions](https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-first-deployment-with-github%5Ftoken).
 
 When we setup all correctly. we can push our repo to GitHub.
 
@@ -242,13 +244,14 @@ And the action should have created a gh-pages branch with the static site.
 
 Maybe you need to edit the settings of the repository in github to set gh-pages correctly if you don't see your site.
 
-Don't forget to set your =baseUrl= in =config.toml= or Hugo can't link the assets.
+Don't forget to set your `baseUrl` in `config.toml` or Hugo can't link the assets.
 
-*** Bonus: Script to export the posts
+
+## Bonus: Script to export the posts {#bonus-script-to-export-the-posts}
 
 This script is to export my posts with just emacs istalled and internet conexion.
 
-#+begin_src emacs-lisp
+```emacs-lisp
 :;exec emacs --batch --quick --load="$0" --funcall=main "$@"
 ;;; publish.el --- Publish ox-hugo file subtree -*- lexical-binding: t -*-
 
@@ -337,19 +340,17 @@ This script is to export my posts with just emacs istalled and internet conexion
 
 (provide 'publish)
 ;;; publish.el ends here
+```
 
-#+end_src
+The first line invokes emacs in batch mode with a trick `:;` (I get this line from a script in guix sources).
+With the `--load` we load the file contents then we run the main function with `--funcall` and we pass the arguments to emacs with `"$@"`.
 
-
-The first line invokes emacs in batch mode with a trick =:;= (I get this line from a script in guix sources).
-With the =--load= we load the file contents then we run the main function with =--funcall= and we pass the arguments to emacs with ="$@"=.
-
-#+begin_src shell
+```shell
 :;exec emacs --batch --quick --load="$0" --funcall=main "$@"
-#+end_src
+```
 
 Now we can run this script from the shell like any other script.
 
-#+begin_src shell
+```shell
 ./package.el # Usage: package.el FILE-NAME [SUBTREE]
-#+end_src
+```

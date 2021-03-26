@@ -21,26 +21,33 @@
 
 ;;; Commentary:
 
-;; Script to export ox-hugo posts from org file subtree.
+;; Script to export posts from org file with ox-hugo headers.
+
+;; More info on https://kcuret.github.io
+
+;; Usage: publish.el FILE-NAME [ SUBTREE ]
+
+;; if SUBTREE is given it search for a subtree with a regex pattern
+;; and only exports that one.
+
 
 ;;; Code:
 
-;; Needed for Debug
-;; (setq debug-on-error t)
+;; Better errors
+(setq debug-on-error t)
 
-;; Set emacs dir to .emacs
-(defvar temp-dir (concat (file-name-directory load-file-name)
-                         ".emacs/"))
-(setq user-emacs-directory temp-dir)
-;; Remove annoying backups
-(setq backup-inhibited t)
+(defvar +cache-dir
+  (concat (file-name-directory load-file-name) ".packages/")
+  "Cache folder where `straight.el' downloads the packages.")
 
-(defun straight-package-manager ()
-  "Install package manager."
-  (message "Loading Straight...")
-  (let ((straight-base-dir user-emacs-directory)
+(defvar +publish--package-list '(org ox-hugo)
+  "Packages to be installed with `straight.el'.")
+
+(defun +publish--install-dependencies ()
+  "Install `straight.el' and `+publish--package-list'."
+  (let ((straight-base-dir +cache-dir)
         (bootstrap-file
-         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" +cache-dir))
         (bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
@@ -49,28 +56,33 @@
            'silent 'inhibit-cookies)
         (goto-char (point-max))
         (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage)))
+    (load bootstrap-file nil 'nomessage)
+    ;; Install & load packages in `publish-package-list'.
+    (dolist (package +publish--package-list)
+      (straight-use-package package)
+      (require package))))
 
-(defvar +publish-package-list '(org ox-hugo))
-
-(defun install-all-packages ()
-  "Install and requre all packages in `+publish-package-list'."
-  (message "Installing packages...")
-  (dolist (package +publish-package-list)
-    (straight-use-package package)
-    (require package)))
-
-(defun build-posts (file)
-  "Export FILE posts."
-  (with-current-buffer (find-file-noselect file)
-    (search-forward "* Blog")
-    (org-hugo-export-wim-to-md t nil nil t)))
+(defun +publish--open-file (file-name)
+  "Open FILE-NAME as read only."
+  (find-file-read-only (expand-file-name file-name))
+  (goto-char (point-min)))
 
 (defun main ()
-  "Main."
-  (straight-package-manager)
-  (install-all-packages)
-  (build-posts (expand-file-name "posts.org" "content/")))
+  "Export FILE-NAME ox-hugo posts."
+  (+publush--install-dependencies)
+  (pcase command-line-args-left
+    ;; Take FILE-NAME and SUBTREE from args
+    (`(,file-name ,subtree)
+     (+publish--open-file file-name)
+     (if (re-search-forward (concat "^*+ " subtree) nil t)
+         (message "%s" (org-hugo-export-wim-to-md nil nil t t))
+       (error "There is no subtree %s in %s" subtree file-name)))
+    ;; Take FILE-NAME from args
+    (`(,file-name)
+     (+publish--open-file file-name)
+     (org-hugo-export-wim-to-md t nil nil t))
+    (x
+     (error "Usage: publish.el FILE [ SUBTREE ]"))))
 
 (provide 'publish)
 ;;; publish.el ends here
